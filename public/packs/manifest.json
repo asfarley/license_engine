@@ -1,0 +1,38 @@
+{
+  "application.js": "/packs/js/application-7ec0d041341b8433bd45.js",
+  "application.js.map": "/packs/js/application-7ec0d041341b8433bd45.js.map",
+  "entrypoints": {
+    "application": {
+      "js": [
+        "/packs/js/application-7ec0d041341b8433bd45.js"
+      ],
+      "js.map": [
+        "/packs/js/application-7ec0d041341b8433bd45.js.map"
+      ]
+    },
+    "rails_admin": {
+      "js": [
+        "/packs/js/rails_admin-1520cf5f0c5c9362b12f.js"
+      ],
+      "js.map": [
+        "/packs/js/rails_admin-1520cf5f0c5c9362b12f.js.map"
+      ]
+    },
+    "tablefilter": {
+      "js": [
+        "/packs/js/tablefilter-ae5f3d292f1d37a8940e.js"
+      ],
+      "js.map": [
+        "/packs/js/tablefilter-ae5f3d292f1d37a8940e.js.map"
+      ]
+    }
+  },
+  "media/webfonts/fa-solid-900.ttf": "/packs/media/webfonts/fa-solid-900-2582b0e4.ttf",
+  "media/webfonts/fa-solid-900.woff2": "/packs/media/webfonts/fa-solid-900-2463b90d.woff2",
+  "rails_admin.js": "/packs/js/rails_admin-1520cf5f0c5c9362b12f.js",
+  "rails_admin.js.map": "/packs/js/rails_admin-1520cf5f0c5c9362b12f.js.map",
+  "tablefilter.js": "/packs/js/tablefilter-ae5f3d292f1d37a8940e.js",
+  "tablefilter.js.map": "/packs/js/tablefilter-ae5f3d292f1d37a8940e.js.map",
+  "vendors~actioncable.js": "/packs/js/vendors~actioncable-42c6398fe66c7e1fe4a8.chunk.js",
+  "vendors~actioncable.js.map": "/packs/js/vendors~actioncable-42c6398fe66c7e1fe4a8.chunk.js.map"
+}

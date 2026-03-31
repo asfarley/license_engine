@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Jti:</strong>
+  <%= @jwt_blacklist.jti %>
+</p>
+
+<p>
+  <strong>Exp:</strong>
+  <%= @jwt_blacklist.exp %>
+</p>
+
+<%= link_to 'Edit', edit_jwt_blacklist_path(@jwt_blacklist) %> |
+<%= link_to 'Back', jwt_blacklists_path %>

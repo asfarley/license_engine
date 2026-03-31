@@ -1,0 +1,42 @@
+<%= form_with(model: telemetry_token, local: true) do |form| %>
+  <% if telemetry_token.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(telemetry_token.errors.count, "error") %> prohibited this telemetry_token from being saved:</h2>
+
+      <ul>
+        <% telemetry_token.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :license_id %>
+    <%= form.text_field :license_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :company_id %>
+    <%= form.text_field :company_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :minutes %>
+    <%= form.number_field :minutes %>
+  </div>
+
+  <div class="field">
+    <%= form.label :clicks %>
+    <%= form.number_field :clicks %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

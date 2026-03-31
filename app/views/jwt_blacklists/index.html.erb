@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Jwt Blacklists</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Jti</th>
+      <th>Exp</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @jwt_blacklists.each do |jwt_blacklist| %>
+      <tr>
+        <td><%= jwt_blacklist.jti %></td>
+        <td><%= jwt_blacklist.exp %></td>
+        <td><%= link_to 'Show', jwt_blacklist %></td>
+        <td><%= link_to 'Edit', edit_jwt_blacklist_path(jwt_blacklist) %></td>
+        <td><%= link_to 'Destroy', jwt_blacklist, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Jwt Blacklist', new_jwt_blacklist_path %>

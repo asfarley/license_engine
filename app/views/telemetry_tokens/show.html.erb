@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @telemetry_token.user_id %>
+</p>
+
+<p>
+  <strong>License:</strong>
+  <%= @telemetry_token.license_id %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @telemetry_token.company_id %>
+</p>
+
+<p>
+  <strong>Minutes:</strong>
+  <%= @telemetry_token.minutes %>
+</p>
+
+<p>
+  <strong>Clicks:</strong>
+  <%= @telemetry_token.clicks %>
+</p>
+
+<%= link_to 'Edit', edit_telemetry_token_path(@telemetry_token) %> |
+<%= link_to 'Back', telemetry_tokens_path %>

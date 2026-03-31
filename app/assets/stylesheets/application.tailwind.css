@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Custom styles */
+.data-table {
+	display: table; 
+	table-layout:auto;
+	overflow-y: auto;	
+	margin: 10px;
+	width:100%;
+}
+
+.table-container {
+  height: 300px;            /* set desired height */
+  overflow-y: auto;         /* vertical scroll only */
+  overflow-x: hidden;
+  width: 100%;
+  outline-width: 1px;
+  outline-style: solid;
+}

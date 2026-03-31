@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  license: one
+  company: one
+  minutes: 1
+  clicks: 1
+
+two:
+  user: two
+  license: two
+  company: two
+  minutes: 1
+  clicks: 1

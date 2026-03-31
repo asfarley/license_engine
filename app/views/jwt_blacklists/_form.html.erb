@@ -1,0 +1,27 @@
+<%= form_with(model: jwt_blacklist, local: true) do |form| %>
+  <% if jwt_blacklist.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(jwt_blacklist.errors.count, "error") %> prohibited this jwt_blacklist from being saved:</h2>
+
+      <ul>
+        <% jwt_blacklist.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :jti %>
+    <%= form.text_field :jti %>
+  </div>
+
+  <div class="field">
+    <%= form.label :exp %>
+    <%= form.datetime_select :exp %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

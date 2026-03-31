@@ -1,0 +1,24 @@
+{
+  "name": "vsls_server",
+  "private": true,
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.4",
+    "@rails/actioncable": "^7.1.3",
+    "@rails/activestorage": "^7.1.3",
+    "@rails/ujs": "^7.1.3-4",
+    "@tailwindcss/cli": "^4.1.11",
+    "tailwindcss": "^4.1.11"
+  },
+  "version": "0.1.0",
+  "scripts": {
+    "build": "esbuild app/javascript/application.js app/javascript/tablefilter.js --bundle --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css",
+    "watch": "esbuild app/javascript/application.js app/javascript/tablefilter.js  --bundle --watch --outdir=app/assets/builds",
+    "watch:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "sass": "^1.72.0"
+  }
+}

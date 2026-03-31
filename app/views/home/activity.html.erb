@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <h3>Recent User Activity</h3>
+  </div>
+
+  <div class="row">
+    <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <th scope="col">email</th>
+        <th scope="col">Last check-out</th>
+        <th scope="col">Last check-in</th>
+      </thead>
+      <tbody>
+      <% @active_users.each do |user| %>
+        <tr>
+          <td><%= user.email %></td>
+          <td><%= user.last_checkout_time %></td>
+          <td><%= user.last_checkin_time %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+</div>

@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Telemetry Tokens</h1>
+
+<div class="table-container">
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>License</th>
+      <th>Company</th>
+      <th>Minutes</th>
+      <th>Clicks</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @telemetry_tokens.each do |telemetry_token| %>
+      <tr>
+        <td><%= telemetry_token.user_id %></td>
+        <td><%= telemetry_token.license_id %></td>
+        <td><%= telemetry_token.company_id %></td>
+        <td><%= telemetry_token.minutes %></td>
+        <td><%= telemetry_token.clicks %></td>
+        <td><%= link_to 'Show', telemetry_token %></td>
+        <td><%= link_to 'Edit', edit_telemetry_token_path(telemetry_token) %></td>
+        <td><%= link_to 'Destroy', telemetry_token, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+
+<br>
+
+<%= link_to 'New Telemetry Token', new_telemetry_token_path %>

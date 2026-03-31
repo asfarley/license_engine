@@ -1,0 +1,38 @@
+{
+  "application.js": "/packs-test/js/application-3b7712e4113ca429b0d8.js",
+  "application.js.map": "/packs-test/js/application-3b7712e4113ca429b0d8.js.map",
+  "entrypoints": {
+    "application": {
+      "js": [
+        "/packs-test/js/application-3b7712e4113ca429b0d8.js"
+      ],
+      "js.map": [
+        "/packs-test/js/application-3b7712e4113ca429b0d8.js.map"
+      ]
+    },
+    "rails_admin": {
+      "js": [
+        "/packs-test/js/rails_admin-f3925f0294e11363ce27.js"
+      ],
+      "js.map": [
+        "/packs-test/js/rails_admin-f3925f0294e11363ce27.js.map"
+      ]
+    },
+    "tablefilter": {
+      "js": [
+        "/packs-test/js/tablefilter-54c3e02cf550a261618a.js"
+      ],
+      "js.map": [
+        "/packs-test/js/tablefilter-54c3e02cf550a261618a.js.map"
+      ]
+    }
+  },
+  "media/webfonts/fa-solid-900.ttf": "/packs-test/media/webfonts/fa-solid-900-2582b0e4.ttf",
+  "media/webfonts/fa-solid-900.woff2": "/packs-test/media/webfonts/fa-solid-900-2463b90d.woff2",
+  "rails_admin.js": "/packs-test/js/rails_admin-f3925f0294e11363ce27.js",
+  "rails_admin.js.map": "/packs-test/js/rails_admin-f3925f0294e11363ce27.js.map",
+  "tablefilter.js": "/packs-test/js/tablefilter-54c3e02cf550a261618a.js",
+  "tablefilter.js.map": "/packs-test/js/tablefilter-54c3e02cf550a261618a.js.map",
+  "vendors~actioncable.js": "/packs-test/js/vendors~actioncable-42c6398fe66c7e1fe4a8.chunk.js",
+  "vendors~actioncable.js.map": "/packs-test/js/vendors~actioncable-42c6398fe66c7e1fe4a8.chunk.js.map"
+}

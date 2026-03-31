@@ -1,0 +1,66 @@
+
+
+<!-- app/views/licenses/bulk_edit.html.erb -->
+
+<div class="container">
+
+<h1>Update License Expiry Dates for <%= @company.name %></h1>
+
+<%= form_with url: bulk_update_company_licenses_path(@company), method: :patch, local: true do %>
+  <div style="margin-bottom: 1em;">
+    <%= label_tag :expiry_date, "New expiry date for selected licenses:" %>
+    <%= date_field_tag :expiry_date, 1.year.from_now.to_date, required: true %>
+  </div>
+
+  <table id="licenses-table" border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" id="select-all" />
+          <label for="select-all">Select All</label>
+        </th>
+        <th>License ID</th>
+        <th>Current Expiry Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @licenses.each do |license| %>
+        <tr>
+          <td>
+            <%= check_box_tag "license_ids[]", license.id, false, class: "license-checkbox" %>
+          </td>
+          <td><%= license.id %></td>
+          <td><%= license.expiry_date&.strftime("%Y-%m-%d") || "Not set" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 1em;">
+    <%= submit_tag "Update Selected Licenses", class: "btn btn-primary" %>
+    <%= link_to "Cancel", company_path(@company), class: "btn btn-secondary" %>
+  </div>
+<% end %>
+
+</div>
+
+<script>
+  // Simple JS to handle "Select All"
+  document.addEventListener("DOMContentLoaded", () => {
+    const selectAll = document.getElementById("select-all");
+    const checkboxes = document.querySelectorAll(".license-checkbox");
+
+    selectAll.addEventListener("change", () => {
+      checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    });
+
+    // If user manually unchecks one box, deselect the master checkbox
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        if (!cb.checked) selectAll.checked = false;
+      });
+    });
+  });
+</script>
+
+
