@@ -1,8 +1,7 @@
-Rails.application.routes.draw do
+LicenseEngine::Engine.routes.draw do
   resources :telemetry_tokens
   resources :jwt_blacklists
 
-  devise_for :users, :controllers => { sessions: 'sessions', registrations: 'registrations'}, :path_prefix => 'my'
   get 'users/emails', to: 'users#emails'
   resources :users
 
