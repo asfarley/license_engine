@@ -2,80 +2,106 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+## What this is
 
-```bash
-# Install dependencies
-bundle install && yarn install
+A **mountable, isolated Rails engine** (`LicenseEngine::`) that manages
+floating network licenses for desktop applications. The engine is
+namespace-isolated (`isolate_namespace LicenseEngine`) — models,
+controllers, views, and tables all live under the `LicenseEngine::` prefix.
 
-# Database
-rails db:create db:migrate db:seed
+The engine does **not** own authentication, users, roles, or session
+management. Those are host-application concerns. The engine defines a
+fixed permission vocabulary and calls host-supplied callbacks to
+authenticate the request and authorize each protected action.
 
-# Run development server (starts Rails + JS watcher + CSS watcher)
-foreman start -f Procfile.dev
+## Configuration API
 
-# Build assets
-yarn build && yarn build:css
+Hosts wire the engine in a Rails initializer:
 
-# Tests
-rails test                    # all tests
-rails test test/models/       # specific directory
-rails test test/models/user_test.rb  # single file
-
-# Linting / security
-bundle exec rubocop
-brakeman
+```ruby
+LicenseEngine.configure do |config|
+  config.authenticate  = ->(controller) { controller.authenticate_user! }
+  config.current_actor = ->(controller) { controller.current_user }
+  config.actor_company = ->(host_user) { host_user&.company }
+  config.authorize     = ->(controller, permission, resource) do
+    PermissionPolicy.new(controller.current_user).can?(permission)
+  end
+end
 ```
 
-## Architecture
+Every callback fails **closed** if unset — `authenticate` and `current_actor`
+raise `LicenseEngine::NotConfigured`, `authorize` returns false, and
+protected actions raise `LicenseEngine::Authorization::NotAuthorized`.
 
-License Server is a Rails 8 app that manages **floating network licenses** for desktop applications and **compiles program descriptions** for those applications.
+## Permission vocabulary
 
-### Core Domain
+The engine defines permissions, not roles. See
+`lib/license_engine/permissions.rb`. Controllers call
+`authorize_engine!(:permission, resource=nil)`. Views call
+`can_engine?(:permission)`.
 
-- **Company** — a license-holding organization; users belong to a company
-- **License** — a floating license owned by a company; can be checked out by one user at a time; has `license_type` enum (Standard/Limited)
-- **User** — belongs to a company, has Rolify roles (`:admin` or `:user`), tracks activity timestamps (`last_checkout_time`, `last_checkin_time`, `last_compile_time`)
-- **Program** — a user-uploaded program source (with Active Storage `binary_input` attachment) that gets compiled by an external binary; has `program_type` enum (11 types); compiled output stored in `program.output`
-- **TelemetryToken** — usage records (minutes, clicks, version) per user/license/company; records older than 60 days are purged by a Rake task
+Current verbs: `view_license`, `issue_license`, `revoke_license`,
+`checkout_license`, `checkin_license`, `bulk_update_licenses`,
+`view_company`, `create_company`, `update_company`, `activate_company`,
+`deactivate_company`, `destroy_company`, `view_telemetry`,
+`record_telemetry`, `destroy_telemetry`, `view_activity`,
+`manage_operators`.
 
-### License Lifecycle
+Hosts map their own roles to these verbs via a `PermissionPolicy` (or
+equivalent).
 
-1. User calls `POST /licenses/:id/checkout` → license is assigned to user
-2. User calls `POST /licenses/:id/checkin` → license is returned
-3. License validity check: non-expired AND currently checked out by the requesting user is required before program compilation
+## Domain
 
-### Program Compilation
+- `LicenseEngine::Company` — license-holding organization
+- `LicenseEngine::License` — floating license owned by a company; can be checked out by one actor at a time; `license_type` enum (`Standard`/`Limited`)
+- `LicenseEngine::Actor` — engine-owned mapping from an opaque host actor (`external_type` + `external_id`) to a company; carries `last_checkout_time` and `last_checkin_time`
+- `LicenseEngine::TelemetryToken` — usage records (minutes, clicks, version) per actor/license/company
 
-`app/helpers/programs_helper.rb` contains the core compilation logic. It shells out to external binaries located in `/vsls_compiler/bin/` (e.g., `process_eqr`, `process_ACE_LER`, `process_ALL`). Compilation is synchronous within the request.
+`LicenseEngine::Actor.for(host_user, company:)` finds or creates the
+engine-side actor record from any host object that responds to `#id`.
 
-### Authorization
+## License lifecycle
 
-Pundit policies in `app/policies/`. Two roles via Rolify:
-- `:admin` — full access across all companies
-- `:user` (default) — scoped to their own company's resources via Pundit policy scopes
+1. `POST /licenses/:id/checkout` — actor claims the license (permission: `checkout_license`)
+2. `POST /licenses/:id/checkin`  — actor returns the license (permission: `checkin_license`)
+3. `GET  /licenses/validate`     — returns whether the actor's company has a valid unexpired license
 
-### Authentication
+## Tables
 
-Devise with `devise-jwt`. JWT tokens are blacklisted on sign-out using the `JwtBlacklist` model. Controllers that serve JSON-only endpoints are CSRF-exempt; standard Devise covers session-based web auth.
+All engine tables carry the `license_engine_` prefix:
 
-### Response Formats
+- `license_engine_companies`
+- `license_engine_licenses`  (has `actor_id` referencing `license_engine_actors`, not `user_id`)
+- `license_engine_actors`
+- `license_engine_telemetry_tokens`
 
-Controllers respond to both HTML and JSON. Some endpoints (license checkout/checkin, telemetry) are JSON-only.
+## Not owned by the engine
 
-## Key Files
+- No `User` model, no `devise`, `devise-jwt`, `rolify`, `pundit` gems
+- No `SessionsController`, `RegistrationsController`, `UsersController`
+- No `JwtBlacklist`, `Role`
+- No devise views or locales
+- No initializers for auth
+
+## Key files
 
 | File | Purpose |
 |------|---------|
-| `app/helpers/programs_helper.rb` | External compiler invocation logic |
-| `app/policies/` | Pundit authorization policies |
-| `config/routes.rb` | All endpoints (RESTful + custom actions) |
-| `db/schema.rb` | Authoritative schema reference |
-| `config/initializers/devise.rb` | JWT config, mailer sender |
+| `lib/license_engine/configuration.rb`     | Callback API + fail-closed defaults |
+| `lib/license_engine/permissions.rb`       | Fixed permission vocabulary |
+| `app/controllers/concerns/license_engine/authorization.rb` | `authenticate_engine!` / `current_actor` / `authorize_engine!` |
+| `app/models/license_engine/actor.rb`      | Engine-owned actor record |
+| `config/routes.rb`                        | Engine routes |
+| `db/migrate/*isolate_license_engine_namespace.rb` | Renames tables to `license_engine_*` |
+| `db/migrate/*create_license_engine_actors.rb`     | Creates the actors table |
 
 ## Environment
 
-- Ruby 3.4.5 (see `.ruby-version`)
-- PostgreSQL; dev credentials in `config/database.yml` (user: `rails`, pass: `vitalsim`)
-- AWS SES for email in production/development; test env uses null mailer
-- Active Storage defaults to disk; production can use S3/GCS/Azure (see `config/storage.yml`)
+- Ruby 3.4.5
+- Rails 8, PostgreSQL
+
+## Testing standalone
+
+The engine ships a full Rails app under `config/` for standalone dev/test.
+Boot with `foreman start -f Procfile.dev` from the repo root; you will
+need to provide your own auth callbacks in a local initializer.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_30_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_30_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,7 +42,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_30_000000) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "companies", force: :cascade do |t|
+  create_table "jwt_blacklist", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", precision: nil, null: false
+    t.index ["jti"], name: "index_jwt_blacklist_on_jti"
+  end
+
+  create_table "license_engine_actors", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.string "external_type", null: false
+    t.bigint "company_id"
+    t.datetime "last_checkout_time"
+    t.datetime "last_checkin_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_license_engine_actors_on_company_id"
+    t.index ["external_type", "external_id"], name: "index_license_engine_actors_on_external", unique: true
+  end
+
+  create_table "license_engine_companies", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -50,23 +68,32 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_30_000000) do
     t.date "license_expiration"
   end
 
-  create_table "jwt_blacklist", force: :cascade do |t|
-    t.string "jti", null: false
-    t.datetime "exp", precision: nil, null: false
-    t.index ["jti"], name: "index_jwt_blacklist_on_jti"
-  end
-
-  create_table "licenses", force: :cascade do |t|
+  create_table "license_engine_licenses", force: :cascade do |t|
     t.string "name"
     t.bigint "company_id", null: false
     t.integer "license_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "actor_id"
     t.boolean "checkedout", default: false, null: false
     t.date "expiry_date"
-    t.index ["company_id"], name: "index_licenses_on_company_id"
-    t.index ["user_id"], name: "index_licenses_on_user_id"
+    t.index ["actor_id"], name: "index_license_engine_licenses_on_actor_id"
+    t.index ["company_id"], name: "index_license_engine_licenses_on_company_id"
+  end
+
+  create_table "license_engine_telemetry_tokens", force: :cascade do |t|
+    t.bigint "actor_id"
+    t.bigint "license_id"
+    t.bigint "company_id"
+    t.integer "minutes"
+    t.integer "clicks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "version"
+    t.index ["actor_id"], name: "index_license_engine_telemetry_tokens_on_actor_id"
+    t.index ["company_id"], name: "index_license_engine_telemetry_tokens_on_company_id"
+    t.index ["created_at"], name: "index_license_engine_telemetry_tokens_on_created_at"
+    t.index ["license_id"], name: "index_license_engine_telemetry_tokens_on_license_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -77,21 +104,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_30_000000) do
     t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
-  end
-
-  create_table "telemetry_tokens", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "license_id"
-    t.bigint "company_id"
-    t.integer "minutes"
-    t.integer "clicks"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "version"
-    t.index ["company_id"], name: "index_telemetry_tokens_on_company_id"
-    t.index ["created_at"], name: "index_telemetry_tokens_on_created_at"
-    t.index ["license_id"], name: "index_telemetry_tokens_on_license_id"
-    t.index ["user_id"], name: "index_telemetry_tokens_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -120,10 +132,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_30_000000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "licenses", "companies"
-  add_foreign_key "licenses", "users"
-  add_foreign_key "telemetry_tokens", "companies"
-  add_foreign_key "telemetry_tokens", "licenses"
-  add_foreign_key "telemetry_tokens", "users"
-  add_foreign_key "users", "companies"
+  add_foreign_key "license_engine_actors", "license_engine_companies", column: "company_id"
+  add_foreign_key "license_engine_licenses", "license_engine_actors", column: "actor_id"
+  add_foreign_key "license_engine_licenses", "license_engine_companies", column: "company_id"
+  add_foreign_key "license_engine_telemetry_tokens", "license_engine_actors", column: "actor_id"
+  add_foreign_key "license_engine_telemetry_tokens", "license_engine_companies", column: "company_id"
+  add_foreign_key "license_engine_telemetry_tokens", "license_engine_licenses", column: "license_id"
+  add_foreign_key "users", "license_engine_companies", column: "company_id"
 end

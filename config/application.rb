@@ -9,6 +9,9 @@ Warning[:deprecated] = true
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Load the engine (this app is the engine's own dev/test host)
+require File.expand_path("../lib/license_engine", __dir__)
+
 module LicenseServer
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

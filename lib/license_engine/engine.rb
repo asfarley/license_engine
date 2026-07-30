@@ -1,12 +1,13 @@
-require "devise"
-require "devise/jwt"
-require "rolify"
-require "pundit"
+require_relative "configuration"
+require_relative "permissions"
 
 module LicenseEngine
   class Engine < ::Rails::Engine
-    # Non-isolated: models/controllers live in the global namespace so the
-    # host app can reference User, Company, License, etc. directly.
+    isolate_namespace LicenseEngine
+
+    # The engine reads its own routes from config/engine_routes.rb so that
+    # a host mounting the engine can use `config/routes.rb` normally.
+    config.paths["config/routes.rb"] = "config/engine_routes.rb"
 
     initializer "license_engine.append_migrations" do |app|
       unless app.root.to_s == root.to_s

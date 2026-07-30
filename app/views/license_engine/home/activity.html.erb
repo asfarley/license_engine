@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <h3>Recent Actor Activity</h3>
+  </div>
+
+  <div class="row">
+    <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <th scope="col">Actor</th>
+        <th scope="col">Last check-out</th>
+        <th scope="col">Last check-in</th>
+      </thead>
+      <tbody>
+      <% @active_actors.each do |actor| %>
+        <tr>
+          <td><%= actor_label(actor) %></td>
+          <td><%= actor.last_checkout_time %></td>
+          <td><%= actor.last_checkin_time %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+</div>

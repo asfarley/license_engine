@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>License Server</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="nav">
+        <% if host_actor %>
+          <%= link_to "Home", root_path, class: "nav-link" %>
+          <% if can_engine?(:view_license) %>
+            <%= link_to "Licenses", licenses_path, class: "nav-link" %>
+          <% end %>
+          <% if can_engine?(:view_company) %>
+            <%= link_to "Companies", companies_path, class: "nav-link" %>
+          <% end %>
+          <% if can_engine?(:view_activity) %>
+            <%= link_to "Activity", activity_path, class: "nav-link" %>
+          <% end %>
+        <% end %>
+      </div>
+    </nav>
+
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+
+    <%= yield %>
+  </body>
+</html>
