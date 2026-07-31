@@ -30,7 +30,7 @@
             <td><%= link_to 'Bulk License Update', bulk_edit_company_licenses_path(company) %></td>
             <td><%= link_to 'Show', company %></td>
             <td><%= link_to 'Edit', edit_company_path(company) %></td>
-            <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <td><%= link_to 'Destroy', company, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } %></td>
           </tr>
         <% end %>
         </tbody>

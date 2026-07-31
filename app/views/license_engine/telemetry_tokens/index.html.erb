@@ -25,7 +25,7 @@
         <td><%= telemetry_token.clicks %></td>
         <td><%= link_to 'Show', telemetry_token %></td>
         <td><%= link_to 'Edit', edit_telemetry_token_path(telemetry_token) %></td>
-        <td><%= link_to 'Destroy', telemetry_token, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', telemetry_token, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
